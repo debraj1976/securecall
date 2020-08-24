@@ -22,35 +22,39 @@ import java.io.File;
 @Configuration
 class SSLConnection {
 	
-	/*@Value("${hap.key-store}")
+	@Value("${ssl1.key-store}")
 	private Resource resource;
-	
-	@Value("${hap.trust-store}")
-	private Resource trustResource;
-	
-	@Value("${hap.key-store-password}")
+
+	@Value("${ssl1.key-store-password}")
 	private String keystorePassword;
-	
-	@Value("${hap.trust-store-password}")
-	private String trustorePassword;
-*/
+
+	@Value("${ssl1.trust-store}")
+	private Resource trustResource;
+
 
 	/**
 	 * @return SSLConnectionSocketFactory
 	 */
-	/*@Bean
+	@Bean
 	public SSLConnectionSocketFactory sslSocket() {
 	
 		SSLConnectionSocketFactory sslsf = null;
 		try {
-	
+
 				File keyStoreFile = resource.getFile();
 				File trustStoreFile = trustResource.getFile();
-	
-				SSLContext sslcontext = SSLContexts.custom()
-						.loadTrustMaterial(trustStoreFile, trustorePassword.toCharArray(),
+
+				/*SSLContext sslcontext = SSLContexts.custom()
+						.loadTrustMaterial(keyStoreFile, keystorePassword.toCharArray(),
 								new TrustSelfSignedStrategy())
-						.build();
+						.build();*/
+
+			SSLContext sslcontext = SSLContexts.custom()
+					.loadTrustMaterial(trustStoreFile, keystorePassword.toCharArray(),
+							new TrustSelfSignedStrategy())
+					.loadKeyMaterial(keyStoreFile, keystorePassword.toCharArray(),
+							keystorePassword.toCharArray())
+					.build();
 	
 				// Allow TLSv12 protocol only
 				 sslsf = new SSLConnectionSocketFactory(
@@ -58,35 +62,32 @@ class SSLConnection {
 						new String[]{"TLSv1.2"},
 						null,
 						SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-	
+
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return sslsf;
-	}*/
+	}
 
 }
 
 @Configuration
 public class HttpClientConfiguration {
 	
-	//@Autowired
-	//private SSLConnectionSocketFactory sSLConnectionSocketFactory;
+	@Autowired
+	private SSLConnectionSocketFactory sSLConnectionSocketFactory;
 
-	/**
-	 * @return CloseableHttpClient
-	 * @throws Exception
-	 */
-	/*public CloseableHttpClient httpClient() throws Exception {
+
+	public CloseableHttpClient httpClient() throws Exception {
 
 		CloseableHttpClient httpClient = HttpClients.custom()
 				.setSSLSocketFactory(sSLConnectionSocketFactory).build();
 
 		return httpClient;
-	}*/
+	}
 
-	/*@Bean
+	@Bean
 	public RestTemplate getRestTemplate() throws Exception {
 
 		final RestTemplate restTemplate = new RestTemplate();
@@ -94,12 +95,16 @@ public class HttpClientConfiguration {
 		factory.setHttpClient(httpClient());
 		restTemplate.setRequestFactory(factory);
 		return restTemplate;
-	}*/
+	}
 
-	@Bean
+	/*@Bean
 	public RestTemplate getRestTemplate() throws Exception {
 
 		final RestTemplate restTemplate = new RestTemplate();
+		//final HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+		//factory.setHttpClient(httpClient());
+		//restTemplate.setRequestFactory(factory);
 		return restTemplate;
-	}
+	}*/
+
 }

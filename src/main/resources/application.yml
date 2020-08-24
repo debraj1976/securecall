@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+ssl1:
+  trust-store: classpath:truststore123.jks
+  key-store: classpath:keystore.jks
+  key-store-password: changeit
+  keyAlias: a1
