@@ -22,13 +22,13 @@ import java.io.File;
 @Configuration
 class SSLConnection {
 	
-	@Value("${ssl1.key-store}")
+	@Value("${ssl.key-store}")
 	private Resource resource;
 
-	@Value("${ssl1.key-store-password}")
+	@Value("${ssl.key-store-password}")
 	private String keystorePassword;
 
-	@Value("${ssl1.trust-store}")
+	@Value("${ssl.trust-store}")
 	private Resource trustResource;
 
 
@@ -44,16 +44,8 @@ class SSLConnection {
 				File keyStoreFile = resource.getFile();
 				File trustStoreFile = trustResource.getFile();
 
-				/*SSLContext sslcontext = SSLContexts.custom()
-						.loadTrustMaterial(keyStoreFile, keystorePassword.toCharArray(),
-								new TrustSelfSignedStrategy())
-						.build();*/
-
 			SSLContext sslcontext = SSLContexts.custom()
-					.loadTrustMaterial(trustStoreFile, keystorePassword.toCharArray(),
-							new TrustSelfSignedStrategy())
-					.loadKeyMaterial(keyStoreFile, keystorePassword.toCharArray(),
-							keystorePassword.toCharArray())
+					.loadTrustMaterial(trustStoreFile, keystorePassword.toCharArray())
 					.build();
 	
 				// Allow TLSv12 protocol only
